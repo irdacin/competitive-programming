@@ -5,6 +5,7 @@
         "clang-analyzer-core.uninitialized.Assign",
         "clang-analyzer-deadcode.DeadStores",
         "clang-analyzer-core.CallAndMessage",
+        "clang-diagnostic-c++20-extensions"
     ],
     "files.associations": {
         "iostream": "cpp",
