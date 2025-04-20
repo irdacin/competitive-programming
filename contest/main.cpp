@@ -46,7 +46,7 @@ const int MOD = 1e9 + 7; // 998244353;
 const int INF = 2e9;
 
 void solve() {
-		
+	
 }
 
 signed main() {
