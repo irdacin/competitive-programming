@@ -10,16 +10,16 @@ template <typename T, typename U> ostream& operator<<(ostream& os, const pair<T,
 	os << _p.first << ' ' << _p.second; return os;
 }
 template <typename T> istream& operator>>(istream& is, vector<T>& _v) {
-	for(auto& _i : _v) { is >> _i; } return is;
+	for(auto &_i : _v) { is >> _i; } return is;
 }
 template <typename T> ostream& operator<<(ostream& os, const vector<T>& _v) {
-	for(auto& _i : _v) { os << _i; if(&_i != &_v.back()) os << ' '; } return os;
+	for(auto &_i : _v) { os << _i; if(&_i != &_v.back()) os << ' '; } return os;
 }
 inline void print() { cout << endl; }
 template <typename T = const char*, typename... U> 
-inline void prin(T&& A = "", U&& ...B) { cout << A; if (sizeof...(U)) prin(B...); }
+inline void prin(T&& A = "", U&&... B) { cout << A; if (sizeof...(U)) prin(B...); }
 template <typename T, typename... U>
-inline void print(T&& A, U&& ...B) { prin(A); if (sizeof...(U)) prin(' '); print(B...); }
+inline void print(T&& A, U&&... B) { prin(A); if (sizeof...(U)) prin(' '); print(B...); }
 template <typename T> inline void printsp(T&& A, const char* sp = " ") { prin(A, sp); }
 
 template <typename T> struct vec : vector<T> { using vector<T>::vector; };

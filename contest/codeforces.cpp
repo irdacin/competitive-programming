@@ -17,10 +17,10 @@ template <typename T> ostream& operator<<(ostream& os, const vector<T>& _v) {
 }
 inline void print() { cout << endl; }
 template <typename T = const char*, typename... U> 
-inline void prin(T &&A = "", U &&...B) { cout << A; if (sizeof...(U)) prin(B...); }
+inline void prin(T&& A = "", U&&... B) { cout << A; if (sizeof...(U)) prin(B...); }
 template <typename T, typename... U>
-inline void print(T &&A, U &&...B) { prin(A); if (sizeof...(U)) prin(' '); print(B...); }
-template <typename T> inline void printsp(T &&A, const char* sp = " ") { prin(A, sp); }
+inline void print(T&& A, U&&... B) { prin(A); if (sizeof...(U)) prin(' '); print(B...); }
+template <typename T> inline void printsp(T&& A, const char* sp = " ") { prin(A, sp); }
 
 template <typename T> struct vec : vector<T> { using vector<T>::vector; };
 template <typename T> struct vvec : vec<vec<T>> {
@@ -46,18 +46,7 @@ const int MOD = 1e9 + 7; // 998244353;
 const int INF = 2e9;
 
 void solve() {
-  int n, k; cin >> n >> k;
-  vec<int> l(n), r(n); cin >> l >> r;
-
-  int ans = 0;
-  for(int i = 0; i < n; i++) {
-    if(l[i] < r[i]) swap(l[i], r[i]);
-
-    ans += l[i];
-  }
-  sort(all(r), greater<>());
-  for(int i = 0; i < k - 1; i++) ans += r[i];
-  print(ans + 1);
+  
 }
 
 signed main() {
@@ -66,6 +55,6 @@ signed main() {
 
   // precompute();
   // cout << fixed << setprecision(6);
-  int t; cin >> t; while(t--)
+  // int t; cin >> t; while(t--)
   solve();
 }
