@@ -1,16 +1,6 @@
 {
     "C_Cpp.errorSquiggles": "disabled",
-    "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
-        "clang-analyzer-core.UndefinedBinaryOperatorResult",
-        "clang-analyzer-core.uninitialized.Assign",
-        "clang-analyzer-deadcode.DeadStores",
-        "clang-analyzer-core.CallAndMessage",
-        "clang-analyzer-cplusplus.NewDeleteLeaks",
-        "clang-analyzer-core.uninitialized.UndefReturn",
-        "clang-analyzer-optin.cplusplus.UninitializedObject",
-        "clang-diagnostic-c++20-extensions",
-        "clang-analyzer-core.DivideZero"
-    ],
+    "C_Cpp.codeAnalysis.clangTidy.enabled": false,
     "workbench.iconTheme": "vscode-icons",
     "files.associations": {
         "iostream": "cpp",
@@ -105,5 +95,5 @@
         "valarray": "cpp",
         "variant": "cpp"
     },
-    "cph.general.saveLocation": "D:\\trash"
+    "cph.general.saveLocation": "D:\\trash",
 }
