@@ -171,6 +171,14 @@
     ],
     "description": "8 directions"
   },
+  "Print Vector": {
+    "prefix": "printv",
+    "scope": "cpp",
+    "body": [
+      "for(auto &x : ${0:ans}) prin(x, \" \\n\"[&x == &${0:ans}.back()]);"
+    ],
+    "description": "Print Vector"
+  },
   "DSU": {
     "scope": "cpp",
     "prefix": "dsu",
