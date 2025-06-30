@@ -68,6 +68,15 @@
     ],
     "description": "Default cpp code for Competitive Programming"
   },
+  "test-case": {
+    "prefix": "tc",
+    "scope": "cpp",
+    "body": [
+      "int t; cin >> t; for(int tc = 1; tc <= t; tc++)",
+      "prin(\"Case #\", tc, \": \"),"
+    ],
+    "description": "Test Case"
+  },
   "pbds": {
     "scope": "cpp",
     "prefix": "pbds",
