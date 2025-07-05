@@ -608,6 +608,7 @@
   },
   "Small Prime Factor": {
     "prefix": "spf",
+    "scope": "cpp",
     "body": [
       "const int MAXN = 2e5;",
       "int spf[MAXN + 1];",
