@@ -11,7 +11,7 @@ struct treap {
     bool rev;
     node(const T& v) : val(v), prior(rand()), size(1), l(NULL), r(NULL), rev(false) {}
   };
-  
+
   treap() : root(NULL) {}
 
   int size(pnode t) { return t ? t->size : 0; }
@@ -35,42 +35,35 @@ struct treap {
     t->size = 1 + size(t->l) + size(t->r);
   }
 
-  pair<pnode, pnode> split(pnode t, int pos) {
-    if(!t) return {NULL, NULL};
-
+  void split(pnode t, pnode &a, pnode &b, int pos) {
+    if(!t) return void(a = b = NULL);
+ 
     push(t);
-
-    if(size(t->l) < pos) {
-      auto [a, b] = split(t->r, pos - size(t->l) - 1);
-      t->r = a, pull(t);
-
-      return {t, b};
-    }
-
-    auto [a, b] = split(t->l, pos);
-    t->l = b, pull(t);
-    
-    return {a, t};
+ 
+    if(size(t->l) < pos) 
+      split(t->r, t->r, b, pos - size(t->l) - 1), a = t;
+    else 
+      split(t->l, a, t->l, pos), b = t;
+ 
+    pull(t);
   }
-
-  pnode merge(pnode a, pnode b) {
-    if(!a || !b) return a ? a : b;
-    
+ 
+  void merge(pnode &t, pnode a, pnode b) {
     push(a), push(b);
-
-    if(a->prior < b->prior) {
-      a->r = merge(a->r, b), pull(a);
-      return a;
-    }
-
-    b->l = merge(a, b->l), pull(b);
-    return b;
+ 
+    if(!a || !b) 
+      t = a ? a : b;
+    else if(a->prior < b->prior) 
+      merge(a->r, a->r, b), t = a;
+    else
+      merge(b->l, a, b->l), t = b;
+ 
+    pull(t);
   }
 
   T at(pnode t, int index) {
-    assert(index >= 0 && index < size(root));
-    
     push(t);
+
     if(index < size(t->l))
       return at(t->l, index);
     if(index > size(t->l))
@@ -80,29 +73,32 @@ struct treap {
   }
 
   T operator[](int index) {
+    assert(index >= 0 && index < size(root));
     return at(root, index);
   }
-  
+ 
   int size() { return size(root); }
   
   void insert(const T& val) {
-    root = merge(root, new node(val));
+    merge(root, root, new node(val));
   }
 
   void insert_at(int index, const T& val) {
-    assert(index >= 0 && index <= size(root));
-    
-    auto [a, b] = split(root, index);
-    root = merge(merge(a, new node(val)), b);
+    assert(index >= 0 && index <= size());
+
+    pnode a, b;
+    split(root, a, b, index);
+    merge(a, a, new node(val));
+    merge(root, a, b);
   }
-
+ 
   void erase_at(int index) {
-    assert(index >= 0 && index < size(root));
+    assert(index >= 0 && index < size());
 
-    auto [a, x] = split(root, index);
-    auto [b, c] = split(x, 1);
-
-    root = merge(a, c);
+    pnode a, b, c;
+    split(root, a, b, index);
+    split(b, b, c, 1);
+    merge(root, a, c);
   }
 
   void clear() {
@@ -111,15 +107,17 @@ struct treap {
 
   void update(int l, int r) {
     l--, r--;
-    
-    auto [a, x] = split(root, l);
-    auto [b, c] = split(x, r - l + 1);
+
+    pnode a, b, c;
+    split(root, a, b, l);
+    split(b, b, c, r - l + 1);
 
     b->rev = true;
-    
-    root = merge(merge(a, b), c);
+
+    merge(root, a, b);
+    merge(root, root, c);
   }
-  
+
   T query(int l, int r) {
 
   }
