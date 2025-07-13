@@ -1,74 +1,55 @@
 struct SegmentTree {
-  #define m ((l + r) >> 1)
-  #define lc (id << 1)
-  #define rc (lc | 1)
-
   struct node {
     int val;
-    node(int _val = 0) : val(_val) {}
+    node(int v = 0) : val(v) {}
+
+    friend node merge(const node& left, const node& right) {
+      node res;
+      res.val = left.val + right.val;
+      return res;
+    }
   };
 
   int n;
-  vec<int> v;
   vec<node> tree;
-  
+
   SegmentTree(int _n) : n(_n) {
-    int sz = 1;
-    for(; sz < n; sz <<= 1);
-    tree.resize(sz << 1);
-  }
-  
-  SegmentTree(vec<int> _v) : n(len(_v)), v(_v) {
-    int sz = 1;
-    for(; sz < n; sz <<= 1);
-    tree.resize(sz << 1);
-    build(0, n - 1, 1);
+    tree.resize(n << 1);
   }
 
-  node merge(node left, node right){
-    return left + right;
+  SegmentTree(const vec<int>& v) : SegmentTree(len(v)) {
+    for(int i = 0; i < len(v); i++) tree[i + n] = node(v[i]);
+    for(int id = n - 1; id; id--) pull(id);
   }
 
-  void build(int l, int r, int id){
-    if(l == r){
-      tree[id] = node(v[l]);
-      return;
-    }
+  void pull(int id) {
+    tree[id] = merge(tree[id << 1], tree[id << 1 | 1]);
+  }
+
+  void update(int id, int value) {
+    // --id;
+    id += n;
+
+    tree[id].val = value;
+    for(id >>= 1; id; id >>= 1) pull(id);
+  }
+
+  int query(int id) {
+    // --id;
+    id += n;
+
+    return tree[id].val;
+  }
+
+  int query(int l, int r) {
+    // --l, --r;
     
-    build(l, m, lc);
-    build(m + 1, r, rc);
-    tree[id] = merge(tree[lc], tree[rc]);
-  }
-  
-  void update(int l, int r, int id, int pos, int val){
-    if(l == r){
-      tree[id] = node(val);
-      return;
+    node resL, resR;
+    for(l += n, r += n + 1; l < r; l >>= 1, r >>= 1) {
+      if(l & 1) resL = merge(resL, tree[l++]);
+      if(r & 1) resR = merge(tree[--r], resR);
     }
 
-    if(pos <= m) update(l, m, lc, pos, val);
-    else update(m + 1, r, rc, pos, val);
-    tree[id] = merge(tree[lc], tree[rc]);
+    return merge(resL, resR).val;
   }
-
-  node query(int l, int r, int id, int pl, int pr){
-    if(l > pr || r < pl) return node();
-    if(pl <= l && r <= pr){
-      return tree[id];
-    }
-
-    return merge(query(l, m, lc, pl, pr), query(m + 1, r, rc, pl, pr));
-  }
-
-  void update(int pos, int val){
-    update(0, n - 1, 1, pos, val);
-  }
-
-  int query(int l, int r){
-    return query(0, n - 1, 1, l, r);
-  }
-
-  #undef m
-  #undef lc
-  #undef rc
 };
