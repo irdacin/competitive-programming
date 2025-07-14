@@ -3,7 +3,7 @@ struct SegmentTree {
     int val;
     node(int v = 0) : val(v) {}
 
-    friend node merge(node left, node right) {
+    friend node merge(const node& left, const node& right) {
       node res;
       res.val = left.val + right.val;
       return res;
@@ -42,7 +42,7 @@ struct SegmentTree {
     if(lz[id].val != 0) {
       apply(id << 1, k, lz[id].val);
       apply(id << 1 | 1, k, lz[id].val);
- 
+
       lz[id].val = 0;
     }
   }
@@ -55,9 +55,9 @@ struct SegmentTree {
     // --l, --r;
     l += n, r += n + 1;
 
-    for(int i = h, k = 1 << (h - 1); i; i--, k >>= 1) {
-      if((l >> i) << i != l) push(l >> i, k);
-      if((r >> i) << i != r) push((r - 1) >> i, k);
+    for(int i = h; i; i--) {
+      if(l >> i << i != l) push(l >> i, 1 << (i - 1));
+      if(r >> i << i != r) push((r - 1) >> i, 1 << (i - 1));
     }
 
     for(int le = l, ri = r, k = 1; le < ri; le >>= 1, ri >>= 1, k <<= 1) {
@@ -66,8 +66,8 @@ struct SegmentTree {
     }
 
     for(int i = 1; i <= h; i++) {
-      if((l >> i) << i != l) pull(l >> i);
-      if((r >> i) << i != r) pull((r - 1) >> i);
+      if(l >> i << i != l) pull(l >> i);
+      if(r >> i << i != r) pull((r - 1) >> i);
     }
   }
 
@@ -75,7 +75,7 @@ struct SegmentTree {
     // --id;
     id += n;
 
-    for(int i = h, k = 1 << (h - 1); i; i--, k >>= 1) push(id >> i, k);
+    for(int i = h; i; i--) push(id >> i, 1 << (i - 1));
     return tree[id].val;
   }
 
@@ -83,9 +83,9 @@ struct SegmentTree {
     // --l, --r;
     l += n, r += n + 1;
 
-    for(int i = h, k = 1 << (h - 1); i; i--, k >>= 1) {
-      if((l >> i) << i != l) push(l >> i, k);
-      if((r >> i) << i != r) push((r - 1) >> i, k);
+    for(int i = h; i; i--) {
+      if(l >> i << i != l) push(l >> i, 1 << (i - 1));
+      if(r >> i << i != r) push((r - 1) >> i, 1 << (i - 1));
     }
 
     node resL, resR;
