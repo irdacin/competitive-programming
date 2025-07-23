@@ -8,14 +8,10 @@ struct RollingHash {
 
   RollingHash(const string& s) {
     int n = len(s);
-    hash1.resize(n + 1);
-    hash2.resize(n + 1);
-    power1.resize(n + 1);
-    power2.resize(n + 1);
-    hash1[0] = 0;
-    hash2[0] = 0;
-    power1[0] = 1;
-    power2[0] = 1;
+    hash1.resize(n + 1); hash2.resize(n + 1);
+    power1.resize(n + 1); power2.resize(n + 1);
+    hash1[0] = 0; hash2[0] = 0;
+    power1[0] = 1; power2[0] = 1;
 
     for(int i = 0; i < n; i++) {
       hash1[i + 1] = hash1[i] * BASE + s[i];
