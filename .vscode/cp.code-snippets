@@ -294,7 +294,7 @@
     ],
     "description": "Sparse Table",
   },
-  "fenwick-tree": {
+  "Fenwick Tree": {
     "scope": "cpp",
     "prefix": "fenwicktree",
     "body": [
@@ -306,20 +306,13 @@
       "    bit.resize(n);",
       "  }",
       "",
-      "  FenwickTree(vec<int> v) : n(len(v) + 1) {",
-      "    bit.resize(n);",
+      "  FenwickTree(const vec<int>& v) : FenwickTree(len(v)) {",
       "    for(int i = 1; i < n; i++)",
       "      update(i, v[i - 1]);",
       "  }",
       "",
-      "  void set(int pos, int val) {",
-      "    int x = query(pos, pos);",
-      "    update(pos, -x);",
-      "    update(pos, val);",
-      "  }",
-      "",
-      "  void update(int pos, int val) {    ",
-      "    for(; pos <= n; pos += pos & -pos) ",
+      "  void update(int pos, int val) {",
+      "    for(; pos < n; pos += pos & -pos) ",
       "      bit[pos] += val;",
       "  }",
       "",
@@ -340,7 +333,7 @@
       "  }",
       "};"
     ],
-    "description": "Fenwick Tree Code"
+    "description": "Fenwick Tree Implementation"
   },
   "Segment Tree": {
     "scope": "cpp",
