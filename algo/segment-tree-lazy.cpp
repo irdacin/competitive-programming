@@ -13,7 +13,8 @@ struct SegmentTree {
   struct tag {
     int val;
 
-    tag(int v = 0) : val(v) {}
+    tag() : val(0) {}
+    tag(int v) : val(v) {}
   };
 
   int n, h;
@@ -31,21 +32,17 @@ struct SegmentTree {
     for(int id = n - 1; id; id--) pull(id);
   }
 
-  void apply(int id, int k, int value) {
-    tree[id].val += k * value;
-    
-    if(id < n) {
-      lazy[id].val += value;
+  void apply(int id, int k, tag t) {
+    if(t.val != 0) {
+      tree[id].val += k * t.val;
+      if(id < n) lazy[id].val += t.val;
     }
   }
-  
-  void push(int id, int k) {
-    if(lazy[id].val != 0) {
-      apply(id << 1, k, lazy[id].val);
-      apply(id << 1 | 1, k, lazy[id].val);
 
-      lazy[id].val = 0;
-    }
+  void push(int id, int k) {
+    apply(id << 1, k, lazy[id]);
+    apply(id << 1 | 1, k, lazy[id]);
+    lazy[id] = tag();
   }
 
   void pull(int id) {
@@ -62,8 +59,8 @@ struct SegmentTree {
     }
 
     for(int le = l, ri = r, k = 1; le < ri; le >>= 1, ri >>= 1, k <<= 1) {
-      if(le & 1) apply(le++, k, value);
-      if(ri & 1) apply(--ri, k, value);
+      if(le & 1) apply(le++, k, tag(value));
+      if(ri & 1) apply(--ri, k, tag(value));
     }
 
     for(int i = 1; i <= h; i++) {
