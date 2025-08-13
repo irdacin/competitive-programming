@@ -245,6 +245,7 @@
     "description": "DSU"
   },
   "Sparse Table": {
+    "scope": "cpp",
     "prefix": "sparsetable",
     "body": [
       "struct SparseTable {",
