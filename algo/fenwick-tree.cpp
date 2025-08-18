@@ -7,25 +7,20 @@ struct FenwickTree {
   }
 
   FenwickTree(const vec<int>& v) : FenwickTree(len(v)) {
-    for(int i = 1; i < n; i++)
-      update(i, v[i - 1]);
+    for(int i = 0; i < len(v); i++)
+      update(i, v[i]);
   }
 
   void update(int pos, int val) {
-    for(; pos < n; pos += pos & -pos) 
+    for(++pos; pos < n; pos += pos & -pos) 
       bit[pos] += val;
   }
 
   int query(int pos) {
     int res = 0;
-    for(; pos > 0; pos -= pos & -pos)
+    for(++pos; pos > 0; pos -= pos & -pos)
       res += bit[pos];
     return res;
-  }
-
-  void update(int l, int r, int val) {
-    update(l, val);
-    update(r + 1, -val);
   }
 
   int query(int l, int r) {
