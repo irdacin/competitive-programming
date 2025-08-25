@@ -6,7 +6,7 @@ struct matrix : vvec<mint> {
     int m = len((*this)[0]);
     assert(m == len(other));
 
-    matrix res(n, m);
+    matrix res(n, len(other[0]));
     for(int i = 0; i < n; i++)
       for(int j = 0; j < len(other[0]); j++)
         for(int k = 0; k < m; k++)
