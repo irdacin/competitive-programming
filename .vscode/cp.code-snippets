@@ -495,7 +495,7 @@
     "description": "Lazy Segment Tree Implementation"
   },
   "Line Intersection": {
-    "prefix": "inter",
+    "prefix": "point",
     "scope": "cpp",
     "body": [
       "struct point {",
