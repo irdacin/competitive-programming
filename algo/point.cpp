@@ -3,8 +3,10 @@ struct point {
   point(int _x = 0, int _y = 0) : x(_x), y(_y) {}
   point operator+(const point& p) const { return point(x + p.x, y + p.y); }
   point operator-(const point& p) const { return point(x - p.x, y - p.y); }
-  
+
+  int dot(const point& p) const { return x * p.x + y * p.y; }
   int cross(const point& p) const { return x * p.y - y * p.x; }
+  int dot(const point& p, const point& q) const { return (p - *this).dot(q - *this); }
   int cross(const point& p, const point& q) const { return (p - *this).cross(q - *this); }
   double dist(const point& p) const { return sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y)); }
 
