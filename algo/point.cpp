@@ -8,7 +8,8 @@ struct point {
   int cross(const point& p) const { return x * p.y - y * p.x; }
   int dot(const point& p, const point& q) const { return (p - *this).dot(q - *this); }
   int cross(const point& p, const point& q) const { return (p - *this).cross(q - *this); }
-  double dist(const point& p) const { return sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y)); }
+  int dist2(const point& p) const { return (x - p.x) * (x - p.x) + (y - p.y) * (y - p.y); }
+  double dist(const point& p) const { return sqrt(dist2(p)); }
 
   friend bool intersect(point p, point q, point r, point s) {
     auto sign = [](int x) { return x >= 0 ? x > 0 : -1; };
