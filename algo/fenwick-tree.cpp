@@ -1,6 +1,7 @@
+template <typename T>
 struct FenwickTree {
   int n;
-  vec<int> bit;
+  vec<T> bit;
 
   FenwickTree(int _n) : n(_n + 1) {
     bit.resize(n);
@@ -11,19 +12,19 @@ struct FenwickTree {
       update(i, v[i]);
   }
 
-  void update(int pos, int val) {
+  void update(int pos, T val) {
     for(++pos; pos < n; pos += pos & -pos) 
       bit[pos] += val;
   }
 
-  int query(int pos) {
-    int res = 0;
+  T query(int pos) {
+    T res = 0;
     for(++pos; pos > 0; pos -= pos & -pos)
       res += bit[pos];
     return res;
   }
 
-  int query(int l, int r) {
+  T query(int l, int r) {
     return query(r) - query(l - 1);
   }
 };
