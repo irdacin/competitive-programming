@@ -18,7 +18,7 @@ struct matrix : vvec<mint> {
     return matrix(*this) *= other; 
   }
 
- friend matrix pow(matrix mat, int k) {
+  friend matrix pow(matrix mat, int k) {
     int n = len(mat);
     assert(n == len(mat[0]));
 
