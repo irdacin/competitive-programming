@@ -47,7 +47,7 @@ struct SegmentTree {
     for(int i = 0; i < n; i++) d[i + n] = node(v[i]);
     build();
   }
-  
+
   void build() {
     for(int id = n - 1; id; id--) pull(id);
   }
@@ -68,14 +68,14 @@ struct SegmentTree {
     d[id] = merge(d[id << 1], d[id << 1 | 1]);
   }
 
-  void update(int id, tag value) {
+  void _update(int id, tag value) {
     id += n;
     for(int i = h; i; i--) push(id >> i, 1 << i);
     apply(id, value);
     for(id >>= 1; id; id >>= 1) pull(id);
   }
 
-  void update(int l, int r, tag value) { // [l, r)
+  void _update(int l, int r, tag value) { // [l, r)
     l += n, r += n;
 
     for(int i = h; i; i--) {
@@ -94,13 +94,13 @@ struct SegmentTree {
     }
   }
 
-  node prod(int id) {
+  node _query(int id) {
     id += n;
     for(int i = h; i; i--) push(id >> i, 1 << i);
     return d[id];
   }
 
-  node prod(int l, int r) { // [l, r)
+  node _query(int l, int r) { // [l, r)
     l += n, r += n;
 
     for(int i = h; i; i--) {
@@ -116,7 +116,7 @@ struct SegmentTree {
 
     return merge(resL, resR);
   }
-  
-  void update(int l, int r, int val) { update(l, r, tag(val)); }
-  int query(int l, int r) { return prod(l, r).val; }
+
+  void update(int l, int r, int val) { _update(l, r, tag(val)); }
+  int query(int l, int r) { return _query(l, r).val; }
 };
