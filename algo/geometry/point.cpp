@@ -25,6 +25,8 @@ struct point {
 
   bool operator==(const point& p) const { return x == p.x && y == p.y; }
   bool operator!=(const point& p) const { return x != p.x || y != p.y; }
+  bool operator<(const point& p) const { return x < p.x || x == p.x && y < p.y; }
+  bool operator>(const point& p) const { return x > p.x || x == p.x && y > p.y; }
   friend istream& operator>>(istream& is, point& p) { return is >> p.x >> p.y; }
-  friend ostream& operator<<(ostream& os, const point& p) { return os << p.x << ' ' << p.y << endl; }
+  friend ostream& operator<<(ostream& os, const point& p) { return os << "(" << p.x << ", " << p.y << ")"; }
 };
