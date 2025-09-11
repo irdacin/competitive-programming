@@ -1,27 +1,21 @@
 struct SegmentTree {
   struct node {
     int val;
-    node(int v = 0) : val(v) {}
+    node() : val(0) {}
+    node(int v) : val(v) {}
 
+    void apply(const node& t) {
+      val += t.val;
+    }
+    
     friend node merge(const node& left, const node& right) {
       node res;
       res.val = left.val + right.val;
       return res;
     }
 
-    friend ostream& operator<<(ostream &os, const node& n) {
-      return os << "(" << n.val << ")";
-    }
-  };
-
-  struct tag {
-    int val;
-
-    tag() {}
-    tag(int v) : val(v) {}
-
-    void apply(node& t) {
-      t.val += val;
+    friend ostream& operator<<(ostream &os, const node& t) {
+      return os << "(" << t.val << ")";
     }
   };
 
@@ -45,16 +39,16 @@ struct SegmentTree {
     d[id] = merge(d[id << 1], d[id << 1 | 1]);
   }
 
-  void _update(int id, tag t) {
-    t.apply(d[id += n]);
+  void update(int id, node t) {
+    d[id += n].apply(t);
     for(id >>= 1; id; id >>= 1) pull(id);
   }
 
-  node _query(int id) {
+  node query_node(int id) {
     return d[id += n];
   }
 
-  node _query(int l, int r) { // [l, r)
+  node query_node(int l, int r) { // [l, r)
     node resL, resR;
     for(l += n, r += n; l < r; l >>= 1, r >>= 1) {
       if(l & 1) resL = merge(resL, d[l++]);
@@ -64,6 +58,6 @@ struct SegmentTree {
     return merge(resL, resR);
   }
 
-  void update(int id, int val) { _update(id, tag(val)); }
-  int query(int l, int r) { return _query(l, r).val; }
+  void update(int id, int val) { update(id, node(val)); }
+  int query(int l, int r) { return query_node(l, r).val; }
 };
