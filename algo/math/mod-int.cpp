@@ -1,12 +1,12 @@
-template<int M>
+template <int M>
 struct ModInt {
-  int val;
-  ModInt(int v = 0) : val(v) { if(val < 0 || val >= M) val %= M; if(val < 0) val += M; }
+  int32_t val;
+  ModInt(int v = 0) { if(v < 0 || v >= M) v %= M; if(v < 0) v += M; val = v; }
   explicit operator int() const { return val; }
 
   ModInt& operator+=(const ModInt& other) { return (val += other.val) >= M ? val -= M : val, *this; }
   ModInt& operator-=(const ModInt& other) { return (val -= other.val) < 0 ? val += M : val, *this; }
-  ModInt& operator*=(const ModInt& other) { return (val *= other.val) %= M, *this; }
+  ModInt& operator*=(const ModInt& other) { return val = 1LL * val * other.val % M, *this; }
   ModInt& operator/=(const ModInt& other) { return *this *= inv(other.val); }
   ModInt& operator++() { return *this += 1; }
   ModInt& operator--() { return *this -= 1; }
@@ -19,17 +19,12 @@ struct ModInt {
   friend ModInt operator*(const ModInt& lhs, const ModInt& rhs) { return ModInt(lhs) *= rhs; }
   friend ModInt operator/(const ModInt& lhs, const ModInt& rhs) { return ModInt(lhs) /= rhs; }
 
-  friend ModInt pow(ModInt mi, int k) { ModInt r = 1; for(; k > 0; k /= 2, mi *= mi) if(k & 1) r *= mi; return r; }
-  static int inv(int mi, int mod) { return mi == 1 ? 1 : mod - inv(mod % mi, mi) * mod / mi; }
-  static int inv(ModInt mi) {
-    return (int) pow(mi, M - 2);
-    // if(gcd(mi.val, M) != 1) return -1;
-    return inv(mi.val, M); // use this inv if M is not prime
-  }
+  friend ModInt pow(ModInt mi, int k) { ModInt r(1); for(; k > 0; k >>= 1, mi *= mi) if(k & 1) r *= mi; return r; }
+  static int32_t inv(ModInt mi) { return pow(mi, M - 2).val; }
 
   bool operator==(const ModInt& other) const { return val == other.val; }
   bool operator!=(const ModInt& other) const { return val != other.val; }
-  friend istream& operator>>(istream& is, ModInt& mi) { is >> mi.val; mi = ModInt(mi.val); return is; }
+  friend istream& operator>>(istream& is, ModInt& mi) { int x; is >> x; mi = ModInt(x); return is; }
   friend ostream& operator<<(ostream& os, const ModInt& mi) { return os << mi.val; }
 };
 
