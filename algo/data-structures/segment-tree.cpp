@@ -7,15 +7,11 @@ struct SegmentTree {
     void apply(const node& t) {
       val += t.val;
     }
-    
+
     friend node merge(const node& left, const node& right) {
       node res;
       res.val = left.val + right.val;
       return res;
-    }
-
-    friend ostream& operator<<(ostream &os, const node& t) {
-      return os << "(" << t.val << ")";
     }
   };
 
@@ -26,7 +22,8 @@ struct SegmentTree {
     d.resize(n << 1);
   }
 
-  SegmentTree(const vec<int>& v) : SegmentTree(len(v)) {
+  template <typename T>
+  SegmentTree(const vec<T>& v) : SegmentTree(len(v)) {
     for(int i = 0; i < n; i++) d[i + n] = node(v[i]);
     build();
   }
