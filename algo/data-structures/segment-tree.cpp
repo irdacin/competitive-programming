@@ -1,20 +1,5 @@
+template <class node>
 struct SegmentTree {
-  struct node {
-    int val;
-    node() : val(0) {}
-    node(int v) : val(v) {}
-
-    void apply(const node& t) {
-      val += t.val;
-    }
-
-    friend node merge(const node& left, const node& right) {
-      node res;
-      res.val = left.val + right.val;
-      return res;
-    }
-  };
-
   int n;
   vec<node> d;
 
@@ -22,9 +7,8 @@ struct SegmentTree {
     d.resize(n << 1);
   }
 
-  template <typename T>
-  SegmentTree(const vec<T>& v) : SegmentTree(len(v)) {
-    for(int i = 0; i < n; i++) d[i + n] = node(v[i]);
+  SegmentTree(const vec<node>& v) : SegmentTree(len(v)) {
+    for(int i = 0; i < n; i++) d[i + n] = v[i];
     build();
   }
 
@@ -36,16 +20,16 @@ struct SegmentTree {
     d[id] = merge(d[id << 1], d[id << 1 | 1]);
   }
 
-  void update(int id, node t) {
+  void update(int id, node t) { // [id]
     d[id += n].apply(t);
     for(id >>= 1; id; id >>= 1) pull(id);
   }
 
-  node query_node(int id) {
+  node query(int id) { // [id]
     return d[id += n];
   }
 
-  node query_node(int l, int r) { // [l, r)
+  node query(int l, int r) { // [l, r)
     node resL, resR;
     for(l += n, r += n; l < r; l >>= 1, r >>= 1) {
       if(l & 1) resL = merge(resL, d[l++]);
@@ -54,7 +38,19 @@ struct SegmentTree {
 
     return merge(resL, resR);
   }
+};
 
-  void update(int id, int val) { update(id, node(val)); }
-  int query(int l, int r) { return query_node(l, r).val; }
+struct node {
+  int val;
+  node(int v = 0) : val(v) {}
+
+  void apply(const node& t) {
+    val += t.val;
+  }
+  
+  friend node merge(const node& left, const node& right) {
+    node res;
+    res.val = left.val + right.val;
+    return res;
+  }
 };
