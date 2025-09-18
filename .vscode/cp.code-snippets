@@ -127,7 +127,7 @@
     ],
     "description": "Static Mod Int with fixed modulus"
   },
-  "Modint": {
+  "Dynamic Mod Int": {
     "prefix": "modintdyn",
     "scope": "cpp",
     "body": [
