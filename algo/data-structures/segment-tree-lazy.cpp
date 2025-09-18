@@ -101,8 +101,8 @@ struct tag {
   tag() : val(0) {}
   tag(int v) : val(v) {}
   
-  void apply(node& t, int k) {
-    t.val += k * val;
+  void apply(node& x, int k) {
+    x.val += k * val;
   }
 
   void combine(const tag& t) {
