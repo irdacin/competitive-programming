@@ -7,17 +7,17 @@ struct FenwickTree {
     d.resize(n);
   }
 
-  FenwickTree(const vec<int>& v) : FenwickTree(len(v)) {
+  FenwickTree(const vec<T>& v) : FenwickTree(len(v)) {
     for(int i = 0; i < len(v); i++)
       update(i, v[i]);
   }
 
-  void update(int pos, T val) {
+  void update(int pos, T val) { // [pos]
     for(pos++; pos < n; pos += pos & -pos) 
       d[pos] += val;
   }
 
-  T query(int pos) {
+  T query(int pos) { // [pos]
     T res = 0;
     for(pos++; pos > 0; pos -= pos & -pos)
       res += d[pos];
