@@ -475,7 +475,7 @@
       "};",
       "",
       "struct node {",
-      "  int val;",
+      "  ${1:int val;}",
       "  node(int v = 0) : val(v) {}",
       "",
       "  friend node merge(const node& left, const node& right) {",
