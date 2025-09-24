@@ -27,9 +27,9 @@ struct SegmentTree {
       int v = new_vertex();
       if(l + 1 == r) return pool[v].d = a[l], v;
 
-      int mid = (l + r) / 2;
-      pool[v].l = build(build, l, mid);
-      pool[v].r = build(build, mid, r);
+      int m = (l + r) / 2;
+      pool[v].l = build(build, l, m);
+      pool[v].r = build(build, m, r);
       pull(v);
       return v;
     };
@@ -58,9 +58,9 @@ struct SegmentTree {
     v = clone(v);
     if(l + 1 == r) return pool[v].d.apply(t), v;
 
-    int mid = (l + r) / 2;
-    if(pos < mid) pool[v].l = update(pool[v].l, l, mid, pos, t);
-    else pool[v].r = update(pool[v].r, mid, r, pos, t);
+    int m = (l + r) / 2;
+    if(pos < m) pool[v].l = update(pool[v].l, l, m, pos, t);
+    else pool[v].r = update(pool[v].r, m, r, pos, t);
     pull(v);
     return v;
   };
@@ -69,17 +69,17 @@ struct SegmentTree {
     if(v == -1) return node();
     if(l + 1 == r) return pool[v].d;
 
-    int mid = (l + r) / 2;
-    if(pos < mid) return query(pool[v].l, l, mid, pos);
-    else return query(pool[v].r, mid, r, pos);
+    int m = (l + r) / 2;
+    if(pos < m) return query(pool[v].l, l, m, pos);
+    else return query(pool[v].r, m, r, pos);
   }
   
   node query(int v, int l, int r, int pl, int pr) {
-    if(v == -1 || l >= pr || r <= pl) return node();
-    if(pl <= l && r <= pr) return pool[v].d;
+    if(v == -1 || pl >= pr) return node();
+    if(l == pl && r == pr) return pool[v].d;
 
-    int mid = (l + r) / 2;
-    return merge(query(pool[v].l, l, mid, pl, pr), query(pool[v].r, mid, r, pl, pr));
+    int m = (l + r) / 2;
+    return merge(query(pool[v].l, l, m, pl, min(m, pr)), query(pool[v].r, m, r, max(pl, m), pr));
   }
 
   int update(int root, int pos, node t) { return update(root, l0, r0, pos, t); } // [pos]
