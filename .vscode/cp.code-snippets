@@ -387,6 +387,7 @@
   },
   "Lazy Segment Tree": {
     "prefix": "segtreelazy",
+    "scope": "cpp",
     "body": [
       "template <class node, class tag>",
       "struct SegmentTree {",
