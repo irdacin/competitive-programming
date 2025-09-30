@@ -25,6 +25,10 @@ struct SegmentTree {
     for(id >>= 1; id; id >>= 1) pull(id);
   }
 
+  node all_query() { // [0, n)
+    return d[1];
+  }
+
   node query(int id) { // [id]
     return d[id += n];
   }
@@ -47,7 +51,7 @@ struct node {
   void apply(const node& t) {
     val += t.val;
   }
-  
+
   friend node merge(const node& left, const node& right) {
     node res;
     res.val = left.val + right.val;

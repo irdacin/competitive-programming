@@ -25,6 +25,7 @@ struct SegmentTree {
   }
 
   void push(int id, int k) {
+    if(lz[id].empty()) return;
     apply(id << 1, lz[id], k >> 1);
     apply(id << 1 | 1, lz[id], k >> 1);
     lz[id] = tag();
@@ -58,6 +59,10 @@ struct SegmentTree {
       if(l >> i << i != l) pull(l >> i);
       if(r >> i << i != r) pull((r - 1) >> i);
     }
+  }
+
+  node all_query() { // [0, n)
+    return d[1];
   }
 
   node query(int id) { // [id]
@@ -100,6 +105,10 @@ struct tag {
 
   tag() : val(0) {}
   tag(int v) : val(v) {}
+
+  bool empty() const {
+    return val == 0;
+  }
 
   void apply(node& x, int k) const {
     x.val += k * val;
