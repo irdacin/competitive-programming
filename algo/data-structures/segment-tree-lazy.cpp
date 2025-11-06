@@ -1,7 +1,7 @@
-template <class node, class tag>
+template <class info, class tag>
 struct SegmentTree {
   int n, h;
-  vec<node> d;
+  vec<info> d;
   vec<tag> lz;
 
   SegmentTree(int _n) : n(_n), h(0) {
@@ -10,8 +10,8 @@ struct SegmentTree {
     lz.resize(n);
   }
 
-  SegmentTree(const vec<node>& v) : SegmentTree(len(v)) {
-    for(int i = 0; i < n; i++) d[i + n] = v[i];
+  SegmentTree(const vec<typename info::value_type>& v) : SegmentTree(len(v)) {
+    for(int i = 0; i < n; i++) d[i + n] = info(v[i]);
     build();
   }
 
@@ -19,7 +19,7 @@ struct SegmentTree {
     for(int id = n - 1; id; id--) pull(id);
   }
 
-  void apply(int id, const tag& t, int k = 1) {
+  void apply(int id, tag t, int k = 1) {
     t.apply(d[id], k);
     if(id < n) lz[id].combine(t);
   }
@@ -33,6 +33,13 @@ struct SegmentTree {
 
   void pull(int id) {
     d[id] = merge(d[id << 1], d[id << 1 | 1]);
+  }
+
+  void update(int id, info t) { // [id]
+    id += n;
+    for(int i = h; i; i--) push(id >> i, 1 << i);
+    d[id] = t;
+    for(id >>= 1; id; id >>= 1) pull(id);
   }
 
   void update(int id, tag t) { // [id]
@@ -61,17 +68,13 @@ struct SegmentTree {
     }
   }
 
-  node all_query() { // [0, n)
-    return d[1];
-  }
-
-  node query(int id) { // [id]
+  info query(int id) { // [id]
     id += n;
     for(int i = h; i; i--) push(id >> i, 1 << i);
     return d[id];
   }
 
-  node query(int l, int r) { // [l, r)
+  info query(int l, int r) { // [l, r)
     l += n, r += n;
 
     for(int i = h; i; i--) {
@@ -79,7 +82,7 @@ struct SegmentTree {
       if(r >> i << i != r) push((r - 1) >> i, 1 << i);
     }
 
-    node resL, resR;
+    info resL, resR;
     for(; l < r; l >>= 1, r >>= 1) {
       if(l & 1) resL = merge(resL, d[l++]);
       if(r & 1) resR = merge(d[--r], resR);
@@ -89,12 +92,14 @@ struct SegmentTree {
   }
 };
 
-struct node {
+struct info {
+  using value_type = int;
   int val;
-  node(int v = 0) : val(v) {}
+  info() : val(0) {}
+  info(value_type v) : val(v) {}
 
-  friend node merge(const node& left, const node& right) {
-    node res;
+  friend info merge(info left, info right) {
+    info res;
     res.val = left.val + right.val;
     return res;
   }
@@ -110,11 +115,11 @@ struct tag {
     return val == 0;
   }
 
-  void apply(node& x, int k) const {
+  void apply(info& x, int k) const {
     x.val += k * val;
   }
 
-  void combine(const tag& t) {
+  void combine(tag t) {
     val += t.val;
   }
 };

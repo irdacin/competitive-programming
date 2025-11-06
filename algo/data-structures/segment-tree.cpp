@@ -1,14 +1,14 @@
-template <class node>
+template <class info>
 struct SegmentTree {
   int n;
-  vec<node> d;
+  vec<info> d;
 
   SegmentTree(int _n) : n(_n) {
     d.resize(n << 1);
   }
 
-  SegmentTree(const vec<node>& v) : SegmentTree(len(v)) {
-    for(int i = 0; i < n; i++) d[i + n] = v[i];
+  SegmentTree(const vec<typename info::value_type>& v) : SegmentTree(len(v)) {
+    for(int i = 0; i < n; i++) d[i + n] = info(v[i]);
     build();
   }
 
@@ -20,21 +20,22 @@ struct SegmentTree {
     d[id] = merge(d[id << 1], d[id << 1 | 1]);
   }
 
-  void update(int id, node t) { // [id]
+  void update(int id, info t) { // [id]
+    d[id += n] = t;
+    for(id >>= 1; id; id >>= 1) pull(id);
+  }
+
+  void update(int id, typename info::value_type t) { // [id]
     d[id += n].apply(t);
     for(id >>= 1; id; id >>= 1) pull(id);
   }
 
-  node all_query() { // [0, n)
-    return d[1];
-  }
-
-  node query(int id) { // [id]
+  info query(int id) { // [id]
     return d[id += n];
   }
 
-  node query(int l, int r) { // [l, r)
-    node resL, resR;
+  info query(int l, int r) { // [l, r)
+    info resL, resR;
     for(l += n, r += n; l < r; l >>= 1, r >>= 1) {
       if(l & 1) resL = merge(resL, d[l++]);
       if(r & 1) resR = merge(d[--r], resR);
@@ -44,16 +45,18 @@ struct SegmentTree {
   }
 };
 
-struct node {
+struct info {
+  using value_type = int;
   int val;
-  node(int v = 0) : val(v) {}
+  info() : val(0) {}
+  info(value_type v) : val(v) {}
 
-  void apply(const node& t) {
-    val += t.val;
+  void apply(value_type v) {
+    val += v;
   }
 
-  friend node merge(const node& left, const node& right) {
-    node res;
+  friend info merge(info left, info right) {
+    info res;
     res.val = left.val + right.val;
     return res;
   }

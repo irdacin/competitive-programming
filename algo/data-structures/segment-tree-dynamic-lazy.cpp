@@ -1,8 +1,8 @@
-template <class node, class tag, bool PERSISTENT = false>
+template <class info, class tag, bool PERSISTENT = false>
 struct SegmentTree {
   struct vertex {
     int l, r;
-    node d;
+    info d;
     tag lz;
 
     vertex() : l(-1), r(-1) {}
@@ -21,12 +21,12 @@ struct SegmentTree {
     return len(pool) - 1;
   }
 
-  int new_root(const vec<node>& a) {
+  int new_root(const vec<typename info::value_type>& a) {
     l0 = 0, r0 = len(a);
     auto build = [&](auto&& build, int l, int r) -> int {
       if(l == r) return -1;
       int v = new_vertex();
-      if(l + 1 == r) return pool[v].d = a[l], v;
+      if(l + 1 == r) return pool[v].d = info(a[l]), v;
 
       int m = (l + r) / 2;
       pool[v].l = build(build, l, m);
@@ -62,10 +62,22 @@ struct SegmentTree {
 
   void pull(int v) {
     pool[v].d = merge(
-      pool[v].l != -1 ? pool[pool[v].l].d : node(),
-      pool[v].r != -1 ? pool[pool[v].r].d : node()
+      pool[v].l != -1 ? pool[pool[v].l].d : info(),
+      pool[v].r != -1 ? pool[pool[v].r].d : info()
     );
   }
+
+  int update(int v, int l, int r, int pos, const info& t) {
+    v = clone(v);
+    if(l + 1 == r) return pool[v].d = t, v;
+
+    push(v, r - l);
+    int m = (l + r) / 2;
+    if(pos < m) pool[v].l = update(pool[v].l, l, m, pos, t);
+    else pool[v].r = update(pool[v].r, m, r, pos, t);
+    pull(v);
+    return v;
+  };
 
   int update(int v, int l, int r, int pos, const tag& t) {
     v = clone(v);
@@ -92,8 +104,8 @@ struct SegmentTree {
     return v;
   }
 
-  node query(int v, int l, int r, int pos) {
-    if(v == -1) return node();
+  info query(int v, int l, int r, int pos) {
+    if(v == -1) return info();
     if(l + 1 == r) return pool[v].d;
 
     push(v, r - l);
@@ -102,8 +114,8 @@ struct SegmentTree {
     else return query(pool[v].r, m, r, pos);
   }
 
-  node query(int v, int l, int r, int pl, int pr) {
-    if(v == -1 || pl >= pr) return node();
+  info query(int v, int l, int r, int pl, int pr) {
+    if(v == -1 || pl >= pr) return info();
     if(l == pl && r == pr) return pool[v].d;
 
     push(v, r - l);
@@ -111,18 +123,21 @@ struct SegmentTree {
     return merge(query(pool[v].l, l, m, pl, min(m, pr)), query(pool[v].r, m, r, max(pl, m), pr));
   }
 
+  int update(int root, int pos, info t) { return update(root, l0, r0, pos, t); } // [pos]
   int update(int root, int pos, tag t) { return update(root, l0, r0, pos, t); } // [pos]
   int update(int root, int l, int r, tag t) { return update(root, l0, r0, l, r, t); } // [l, r)
-  node query(int root, int pos) { return query(root, l0, r0, pos); } // [pos]
-  node query(int root, int l, int r) { return query(root, l0, r0, l, r); } // [l, r)
+  info query(int root, int pos) { return query(root, l0, r0, pos); } // [pos]
+  info query(int root, int l, int r) { return query(root, l0, r0, l, r); } // [l, r)
 };
 
-struct node {
+struct info {
+  using value_type = int;
   int val;
-  node(int v = 0) : val(v) {}
+  info() : val(0) {}
+  info(int v) : val(v) {}
   
-  friend node merge(const node& left, const node& right) {
-    node res;
+  friend info merge(info left, info right) {
+    info res;
     res.val = left.val + right.val;
     return res;
   }
@@ -138,11 +153,11 @@ struct tag {
     return val == 0;
   }
 
-  void apply(node& x, int k) const {
+  void apply(info& x, int k) const {
     x.val += k * val;
   }
 
-  void combine(const tag& t) {
+  void combine(tag t) {
     val += t.val;
   }
 };
