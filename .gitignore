@@ -1,1 +1,7 @@
 contest/
+**/.cph/
+*.exe
+*.out
+*.obj
+*.o
+*.log
