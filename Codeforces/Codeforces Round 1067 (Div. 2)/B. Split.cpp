@@ -86,44 +86,14 @@ void solve() {
   vec<int> freq(n * 2);
   for(int a, i = 0; i < n * 2; i++) cin >> a, a--, freq[a]++;
 
-  int ans = 0;
-  vec<int> odd, even, le, ri;
+  int odd = 0, even = 0;
   for(int a = 0; a < n * 2; a++) {
-    if(freq[a] > 0) {
-      if(freq[a] & 1) odd.eb(a);
-      else even.eb(a);
-    }
-  }
-
-  for(auto a : even) {
-    le.eb(a), ri.eb(a);
-    freq[a] -= 2;
-  }
-
-  for(auto a : odd) {
-    for(; freq[a] > 0 && len(le) < n; freq[a]--) le.eb(a);
-    for(; freq[a] > 0 && len(ri) < n; freq[a]--) ri.eb(a);
-  }
-
-  while(len(le) < n) {
-    for(int a = 0; a < n * 2; a++) {
-      for(; freq[a] > 0 && len(le) < n; freq[a]--) le.eb(a);
-    }
+    if(freq[a] & 1) odd++;
+    else if(freq[a] > 0) even++;
   }
   
-  while(len(ri) < n) {
-    for(int a = 0; a < n * 2; a++) {
-      for(; freq[a] > 0 && len(ri) < n; freq[a]--) ri.eb(a);
-    }
-  }
-
-  prind(le, ri);
-  for(int i = 0; i < 2; i++, swap(le, ri)) {
-    for(auto x : le) freq[x]++;
-    prind(freq);
-    for(auto x : freq) ans += x & 1;
-    for(auto x : le) freq[x] = 0;
-  }
+  int ans = odd + even * 2;
+  if(odd == 0 && n % 2 != even % 2) ans -= 2;
   print(ans);
 }
 
