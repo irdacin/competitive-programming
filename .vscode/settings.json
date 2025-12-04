@@ -6,5 +6,6 @@
         "**/.cph": true,
         "**/.cph/**": true,
         "**/.cph/*.json": true
-    }
+    },
+    "editor.formatOnSave": false
 }
