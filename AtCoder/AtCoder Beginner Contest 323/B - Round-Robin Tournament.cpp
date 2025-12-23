@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define debug(x) cout << #x << " => " << x << endl
+#define fastio ios_base::sync_with_stdio(false), cin.tie(NULL), cout.tie(NULL)
+#define endl '\n'
+
+inline void print() { cout << endl; }
+template <typename T> inline void printsp(T &A, string sp = " ") { cout << A << sp; }
+template <typename T, typename... U> inline void print(T &&A, U &&...B) {
+    cout << A; if (sizeof...(U)) cout << ' '; print(B...);
+}
+template <typename T, typename U> ostream& operator<<(ostream& os, const pair<T, U>& _p) {
+    os << _p.first << ' ' << _p.second; return os;
+}
+template <typename T> istream& operator>>(istream& is, vector<T>& _v) {
+    for(auto &_i : _v) { is >> _i; } return is;
+}
+template <typename T> ostream& operator<<(ostream& os, const vector<T>& _v) {
+    for(auto &_i : _v) { os << _i; if(&_i != &_v.back()) os << ' '; } return os;
+}
+
+template <typename T> struct vec : vector<T> { using vector<T>::vector; };
+template <typename T> struct vvec : vec<vec<T>> {
+    using vec<vec<T>>::vec;
+    vvec(int N = 0, int M = 0, const T& _init_value = T())
+        : vec<vec<T>>(N, vec<T>(M, _init_value)) {}
+};
+template <typename T> struct vvvec : vec<vvec<T>> {
+    using vec<vvec<T>>::vec;
+    vvvec(int N = 0, int M = 0, int K = 0, const T& _init_value = T())
+        : vec<vvec<T>>(N, vvec<T>(M, K, _init_value)) {}
+};
+
+#define eb emplace_back
+#define all(x) x.begin(), x.end()
+#define len(x) (int) x.size()
+
+using pii = pair<int, int>;
+using iii = tuple<int, int, int>;
+#define fi first
+#define se second
+
+const int MOD = 1e9 + 7;
+const int INF = 2e9;
+const int MAXN = 2e5;
+
+void solve(){
+	int n; cin >> n;
+	vvec<char> s(n, n); cin >> s;
+
+	vec<pii> ans;
+	for(int i = 0; i < n; i++){
+		int cnt = 0;
+		for(int j = 0; j < n; j++) cnt += s[i][j] == 'o';
+		ans.eb(cnt, i + 1);
+	}
+
+	sort(all(ans), [](auto a, auto b){
+		if(a.fi > b.fi) return true;
+		if(a.fi == b.fi && a.se < b.se) return true;
+		return false;
+	});
+	for(auto x : ans) printsp(x.se);
+}
+
+signed main(){
+	#ifndef fastio
+	#define fastio
+	#endif
+
+	fastio;
+	// precompute();
+
+	// int t; cin >> t; while(t--)
+	solve();
+}
