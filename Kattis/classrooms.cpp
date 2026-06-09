@@ -2,74 +2,237 @@
 using namespace std;
 
 #define int long long
+#define fastio ios_base::sync_with_stdio(false), cin.tie(NULL), cout.tie(NULL)
 #define endl '\n'
-#define rcout(x) return void(cout << x)
 
-template <typename T, typename U> istream& operator>>(istream& is, pair<T, U>& _p) { is >> _p.first >> _p.second; return is; }
-template <typename T, typename U> ostream& operator<<(ostream& os, const pair<T, U> _p) { os << _p.first << ' ' << _p.second; return os; }
-template <typename T> istream& operator>>(istream& is, vector<T>& _v) { for(auto &_i : _v) is >> _i; return is; }
-template <typename T> ostream& operator<<(ostream& os, const vector<T> _v) { for(auto &_i : _v) os << _i << " \n"[&_i == &_v.back()]; return os; }
-template <typename T, typename U> ostream& operator<<(ostream& os, const vector<pair<T, U>> _v) { for(auto _i : _v) os << _i << endl; return os; }
-template <typename T> struct vec : vector<T> { using vector<T>::vector; };
+#ifndef ONLINE_JUDGE
+void _print(bool _x) { cout << (_x ? "true" : "false"); }
+template <typename T> void _print(const T& _x) {
+  if constexpr (ranges::range<T> && !is_convertible_v<T, string>) {
+    cout << "{ "; bool _f = 0;
+    for (auto _e : _x) cout << (_f ? ", " : (_f = 1, "")), _print(_e);
+    cout << " }";
+  }
+  else if constexpr (requires(T _c) { _c.empty(); _c.pop(); }) {
+    cout << "{ "; bool _f = 0;
+    for (auto _c = _x; !_c.empty(); _c.pop(), _f = 1) {
+      cout << (_f ? ", " : "");
+      if constexpr (requires{ _c.top(); }) _print(_c.top());
+      else _print(_c.front());
+    } cout << " }";
+  }
+  else if constexpr (requires { typename tuple_size<T>::type; }) {
+    cout << "("; bool _f = 0; apply([&](const auto&... _e) {
+      ((cout << (_f ? ", " : ""), _print(_e), _f = 1), ...); }, _x
+    ); cout << ")";
+  }
+  else cout << _x;
+}
+template <typename... T> void print(const T&... _x) {
+  if constexpr (sizeof...(_x)) {
+    bool _f = 0; ((cout << (_f ? " " : ""), _print(_x), _f = 1), ...);
+  } cout << endl;
+}
+#define prind(...) cout << "[" << #__VA_ARGS__ << "] = "; print(__VA_ARGS__)
+#else
+#define prind(...)
+inline void print() { cout << endl; }
+template <typename T> inline void print(T&& A) { cout << A << endl; }
+template <typename T, typename... U>
+inline void print(T&& A, U&&... B) { cout << A << ' '; print(B...); }
+#endif
+template <typename T = const char*, typename... U>
+inline void prin(T&& A = "", U&&... B) { cout << A; if (sizeof...(U)) prin(B...); }
+template <typename T> inline void prins(T&& A) { cout << A << ' '; }
+
+template <typename T> bool chmax(T& a, const T& b) { return b > a ? (a = b, 1) : 0; }
+template <typename T> bool chmin(T& a, const T& b) { return b < a ? (a = b, 1) : 0; }
+template <typename T> istream& operator>>(istream& is, vector<T>& _v) {
+  for (auto& _x : _v) { is >> _x; } return is;
+}
+template <typename T> inline void prinv(const T& A, string sp = " ") {
+  bool _f = 0; for (const auto& _x : A) cout << (_f ? sp : "") << _x, _f = 1;
+  cout << endl;
+}
+
+template <typename T> using vec = vector<T>;
 template <typename T> struct vvec : vec<vec<T>> {
-    vvec(initializer_list<initializer_list<T>> _list) { for(const auto& _row : _list) this->emplace_back(_row); }
-    vvec(int _n = 0, int _m = 0, const T& _init_value = T()) : vec<vec<T>>(_n, vec<T>(_m, _init_value)) {}
-    friend ostream& operator<<(ostream &os, const vvec _v) { for(auto _i : _v) os << _i; return os; }
+  using vec<vec<T>>::vec;
+  vvec(size_t N = 0, size_t M = 0, const T& _init_value = T())
+    : vec<vec<T>>(N, vec<T>(M, _init_value)) {}
 };
 template <typename T> struct vvvec : vec<vvec<T>> {
-    vvvec(initializer_list<initializer_list<initializer_list<T>>> _list) { for(const auto& _rows : _list) for(const auto& _row : _rows) this->emplace_back(_row); }
-    vvvec(int _n = 0, int _m = 0, int _k = 0, const T& _init_value = T()) : vec<vvec<T>>(_n, vvec<T>(_m, _k, _init_value)) {}
-    friend ostream& operator<<(ostream &os, const vvvec _v) { for(auto _i : _v) os << _i << endl; return os; }
+  using vec<vvec<T>>::vec;
+  vvvec(size_t N = 0, size_t M = 0, size_t K = 0, const T& _init_value = T())
+    : vec<vvec<T>>(N, vvec<T>(M, K, _init_value)) {}
 };
-#define eb emplace_back
-#define all(x) x.begin(), x.end()
-#define len(x) (int) x.size()
+
 using pii = pair<int, int>;
 using iii = tuple<int, int, int>;
 #define fi first
 #define se second
+#define emp emplace
+#define eb emplace_back
+#define run(...) [&](){__VA_ARGS__}()
+#define all(x) (x).begin(), (x).end()
+#define len(x) (int)(x).size()
 
-const int MOD = 1e9 + 7;
+const int MOD = 1e9 + 7; // 998244353;
 const int INF = 2e9;
+const double EPS = 1e-9;
 
-void solve(){
-    int n, k; cin >> n >> k;
-    vec<pii> activities(n);
-    for(auto &[f, s] : activities) cin >> s >> f, ++f;
-    sort(all(activities));
+template <class info, bool PERSISTENT = false>
+struct SegmentTree {
+  struct vertex {
+    int l, r;
+    info d;
 
-    int ans = 0;
-    multiset<int> ms;
-    for(auto [f, s] : activities){
-        auto it = ms.upper_bound(s);
+    vertex() : l(-1), r(-1) {}
+  };
 
-        // if it starts before all end times
-        if(it == ms.begin()){
+  int l0, r0;
+  vec<vertex> pool;
 
-            // if have more classroom, just add it
-            if(len(ms) < k){
-                ms.emplace(f);
-                ans++;
-            }
+  SegmentTree(int n = 10'000'000) {
+    pool.reserve(n);
+  }
 
-            continue;
-        }
+  int new_root(int l, int r) {
+    l0 = l, r0 = r;
+    pool.eb();
+    return len(pool) - 1;
+  }
 
-        // if not, replace it with new end time
-        ms.erase(--it);
-        ms.emplace(f);
-        ans++;
+  int new_root(const vec<typename info::value_type>& a) {
+    l0 = 0, r0 = len(a);
+    auto build = [&](auto&& build, int l, int r) -> int {
+      if(l == r) return -1;
+      int v = new_vertex();
+      if(l + 1 == r) return pool[v].d = info(a[l]), v;
+
+      int m = (l + r) / 2;
+      pool[v].l = build(build, l, m);
+      pool[v].r = build(build, m, r);
+      pull(v);
+      return v;
+    };
+    return build(build, l0, r0);
+  }
+
+  int new_vertex(const vertex& v = vertex()) {
+    pool.eb(v);
+    return len(pool) - 1;
+  }
+
+  int clone(int v) {
+    if(v == -1) return new_vertex();
+    if(PERSISTENT) return new_vertex(pool[v]);
+    return v;
+  }
+
+  void pull(int v) {
+    pool[v].d = merge(
+      pool[v].l != -1 ? pool[pool[v].l].d : info(),
+      pool[v].r != -1 ? pool[pool[v].r].d : info()
+    );
+  }
+
+  int update(int v, int l, int r, int pos, const info& t) {
+    v = clone(v);
+    if(l + 1 == r) return pool[v].d = t, v;
+
+    int m = (l + r) / 2;
+    if(pos < m) pool[v].l = update(pool[v].l, l, m, pos, t);
+    else pool[v].r = update(pool[v].r, m, r, pos, t);
+    pull(v);
+    return v;
+  };
+
+  int update(int v, int l, int r, int pos, const typename info::value_type& t) {
+    v = clone(v);
+    if(l + 1 == r) return pool[v].d.apply(t), v;
+
+    int m = (l + r) / 2;
+    if(pos < m) pool[v].l = update(pool[v].l, l, m, pos, t);
+    else pool[v].r = update(pool[v].r, m, r, pos, t);
+    pull(v);
+    return v;
+  };
+  
+  info query(int v, int l, int r, int pos) {
+    if(v == -1) return info();
+    if(l + 1 == r) return pool[v].d;
+
+    int m = (l + r) / 2;
+    if(pos < m) return query(pool[v].l, l, m, pos);
+    else return query(pool[v].r, m, r, pos);
+  }
+  
+  info query(int v, int l, int r, int pl, int pr) {
+    if(v == -1 || pl >= pr) return info();
+    if(l == pl && r == pr) return pool[v].d;
+
+    int m = (l + r) / 2;
+    return merge(query(pool[v].l, l, m, pl, min(m, pr)), query(pool[v].r, m, r, max(pl, m), pr));
+  }
+
+  int update(int root, int pos, info t) { return update(root, l0, r0, pos, t); } // [pos]
+  int update(int root, int pos, typename info::value_type t) { return update(root, l0, r0, pos, t); } // [pos]
+  info query(int root, int pos) { return query(root, l0, r0, pos); } // [pos]
+  info query(int root, int l, int r) { return query(root, l0, r0, l, r); } // [l, r)
+};
+
+struct info {
+  using value_type = int;
+  value_type val;
+  info() : val() {}
+  operator value_type() const { return val; }
+
+  info(value_type v) : val(v) {}
+
+  void apply(value_type v) {
+    val += v;
+  }
+
+  friend info merge(info left, info right) {
+    info res;
+    res.val = left.val + right.val;
+    return res;
+  }
+};
+
+void solve() {
+  int n, k; cin >> n >> k;
+  vec<pii> a(n);
+  for(auto &[f, s] : a) cin >> s >> f, s--, f--;
+  sort(all(a));
+
+  SegmentTree<info> seg;
+  auto root = seg.new_root(0, 1e9);
+  int ans = 0;
+
+  for(auto [f, s] : a) {
+    int p = -1;
+    for(int l = 0, r = s - 1; l <= r;) {
+      int m = (l + r) / 2;
+      if(seg.query(root, m, s) > 0) p = m, l = m + 1;
+      else r = m - 1;
     }
 
-    cout << ans;
+    // prind(p);
+
+    if(p != -1) seg.update(root, p, -1);
+    if(seg.query(root, 0, 1e9) < k) ans++, seg.update(root, f, 1);
+  }
+
+  print(ans);
 }
 
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+signed main() {
+  fastio;
+  // cout << fixed << setprecision(6);
 
-    // int t; cin >> t; while(t--)
-    solve(), cout << endl;
-    // solve();
+  // precompute();
+  // int t; cin >> t; while (t--)
+  solve();
 }
