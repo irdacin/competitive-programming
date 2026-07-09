@@ -83,8 +83,13 @@ const double EPS = 1e-9;
 
 void solve() {
   int x, y, k; cin >> x >> y >> k;
+  int ans = 0;
+  for(; x != y; ans++) {
+    if(x < y) swap(x, y);
+    x /= k;
+  }
 
-  
+  print(ans);
 }
 
 signed main() {
