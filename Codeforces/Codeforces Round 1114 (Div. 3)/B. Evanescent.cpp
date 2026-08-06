@@ -85,22 +85,22 @@ void solve() {
   int n; cin >> n;
   string s; cin >> s;
 
-  int ans = 0;
+  int ans = 1;
   bool used = false;
   bool solo = false;
 
   for(int i = 0; i < n; i++) {
-    prind(i);
-    if(!used && i < n - 2 && s[i] == s[i + 2] && s[i + 1] != s[i]) {
-      i += 2, used = true;
-      for(; i < n - 1 && s[i] == s[i + 1]; i++);
-    } else if(i < n - 1 && s[i] == s[i + 1]) {
-        for(; i < n - 1 && s[i] == s[i + 1]; i++);
-    } else if(i > 0 && i < n - 1) solo = true;
-    ans++;
+    if(i < n - 1 && s[i] != s[i + 1]) {
+      // prind(i);
+      if(!used && i < n - 2 && s[i] == s[i + 2]) {
+        used = true;
+        ans -= !solo;
+        // prind(ans);
+      } else if(!used && !solo && i > 0 && s[i] != s[i - 1]) solo = true;
+      else ans++;
+    }
   }
   
-  if(ans > 2) ans -= !used && solo;
   print(ans);
 }
 
