@@ -82,21 +82,42 @@ const int INF = 2e9;
 const double EPS = 1e-9;
 
 void solve() {
-  int n, m, k; cin >> n >> m >> k;
-  vvec<char> a(n, m); cin >> a;
+  int h, w, k; cin >> h >> w >> k;
+  vvec<char> a(h, w); cin >> a;
 
-  vvec<int> pref(n, m);
-  for(int i = 1; i < n; i++) {
-    for(int j = 1; j < m; j++) {
-      pref[i][j] = a[i][j] - '0';
+  vvec<int> pref(h + 1, w + 1);
+  for(int i = 1; i <= h; i++) {
+    for(int j = 1; j <= w; j++) {
+      pref[i][j] = a[i - 1][j - 1] - '0';
       pref[i][j] += pref[i - 1][j] + pref[i][j - 1] - pref[i - 1][j - 1];
     }
   }
 
+  auto get = [&](int r1, int c1, int r2, int c2) {
+    return pref[r2][c2] - pref[r1 - 1][c2] - pref[r2][c1 - 1] + pref[r1 - 1][c1 - 1];
+  };
+
   int ans = 0;
-  for(int i = 0; i < n; i++) {
-    for(int j = 0; j < m; j++) {
-      
+  for(int i = 1; i <= h; i++) {
+    for(int j = 1; j <= w; j++) {
+			for(int r = i; r <= h; r++) {
+        int le = w + 1;
+        for(int left = j, right = w; left <= right;) {
+          int m = (left + right) / 2;
+          if(get(i, j, r, m) < k) left = m + 1;
+          else le = m, right = m - 1;
+        }
+        
+        int ri = -1;
+        for(int left = j, right = w; left <= right;) {
+          int m = (left + right) / 2;
+          if(get(i, j, r, m) <= k) ri = m, left = m + 1;
+          else right = m - 1;
+        }
+
+        prind(le, ri);
+        if(le <= ri) ans += ri - le + 1;
+      }
     }
   }
 
