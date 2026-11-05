@@ -83,22 +83,18 @@ const double EPS = 1e-9;
 
 void solve() {
   int n; cin >> n;
-  bool full = true; int cnt = 0;
-  for(int tmp = n; tmp > 0; tmp >>= 1) full &= (tmp & 1), cnt++;
-  if(full) {
-    print(cnt);
-    for(int i = 0; i < n; i++) {
-      if(n >> (i + 1) & 1) prins(0);
-      else prins(i & 1);
-    }
-    print();
-  } else {
-    int x = 1;
-    for(int i = 0; i < n - 1; i++) prins(0); print(1);
-  }
 
-  // print(16 ^20^24^28^9^11^13^30);
-  // print()
+  int k = (1 << 32 - __builtin_clz(n)) - 1;
+  int m = n % 4 == 0 ? n : n % 4 == 1 ? 1 : n % 4 == 2 ? n + 1 : 0;
+
+  // print(m, k);
+  for(int i = 0; ; i++) {
+    if((m ^ i ^ (i << 1)) >= (k << 1)) {
+      vec<int> ans(n);
+      for(int j = 0; 1 << j <= n; j++) if(i >> j & 1) ans[(1 << j) - 1]++;
+      return prinv(ans);
+    }
+  }
 }
 
 signed main() {
