@@ -21,7 +21,8 @@ struct SegmentTree {
     return len(pool) - 1;
   }
 
-  int new_root(const vec<typename info::value_type>& a) {
+  template <typename U>
+  int new_root(const vec<typename U>& a) {
     l0 = 0, r0 = len(a);
     auto build = [&](auto&& build, int l, int r) -> int {
       if(l == r) return -1;
@@ -131,11 +132,11 @@ struct SegmentTree {
 };
 
 struct info {
-  using value_type = int;
   int val;
   info() : val(0) {}
   info(int v) : val(v) {}
-  
+  operator int() const { return val; }
+
   friend info merge(info left, info right) {
     info res;
     res.val = left.val + right.val;

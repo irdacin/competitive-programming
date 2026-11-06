@@ -10,7 +10,8 @@ struct SegmentTree {
     lz.resize(n);
   }
 
-  SegmentTree(const vec<typename info::value_type>& v) : SegmentTree(len(v)) {
+  template <typename U>
+  SegmentTree(const vec<U>& v) : SegmentTree(len(v)) {
     for(int i = 0; i < n; i++) d[i + n] = info(v[i]);
     build();
   }
@@ -93,10 +94,10 @@ struct SegmentTree {
 };
 
 struct info {
-  using value_type = int;
   int val;
   info() : val(0) {}
-  info(value_type v) : val(v) {}
+  info(int v) : val(v) {}
+  operator int() const { return val; }
 
   friend info merge(info left, info right) {
     info res;

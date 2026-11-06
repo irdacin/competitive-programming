@@ -20,7 +20,8 @@ struct SegmentTree {
     return len(pool) - 1;
   }
 
-  int new_root(const vec<typename info::value_type>& a) {
+  template <typename U>
+  int new_root(const vec<typename U>& a) {
     l0 = 0, r0 = len(a);
     auto build = [&](auto&& build, int l, int r) -> int {
       if(l == r) return -1;
@@ -64,17 +65,6 @@ struct SegmentTree {
     pull(v);
     return v;
   };
-
-  int update(int v, int l, int r, int pos, const typename info::value_type& t) {
-    v = clone(v);
-    if(l + 1 == r) return pool[v].d.apply(t), v;
-
-    int m = (l + r) / 2;
-    if(pos < m) pool[v].l = update(pool[v].l, l, m, pos, t);
-    else pool[v].r = update(pool[v].r, m, r, pos, t);
-    pull(v);
-    return v;
-  };
   
   info query(int v, int l, int r, int pos) {
     if(v == -1) return info();
@@ -94,20 +84,15 @@ struct SegmentTree {
   }
 
   int update(int root, int pos, info t) { return update(root, l0, r0, pos, t); } // [pos]
-  int update(int root, int pos, typename info::value_type t) { return update(root, l0, r0, pos, t); } // [pos]
   info query(int root, int pos) { return query(root, l0, r0, pos); } // [pos]
   info query(int root, int l, int r) { return query(root, l0, r0, l, r); } // [l, r)
 };
 
 struct info {
-  using value_type = int;
   int val;
   info() : val(0) {}
   info(int v) : val(v) {}
-
-  void apply(value_type v) {
-    val += v;
-  }
+  operator int() const { return val; }
 
   friend info merge(info left, info right) {
     info res;

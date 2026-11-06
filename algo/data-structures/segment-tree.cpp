@@ -7,7 +7,8 @@ struct SegmentTree {
     d.resize(n << 1);
   }
 
-  SegmentTree(const vec<typename info::value_type>& v) : SegmentTree(len(v)) {
+  template <typename U>
+  SegmentTree(const vec<U>& v) : SegmentTree(len(v)) {
     for(int i = 0; i < n; i++) d[i + n] = info(v[i]);
     build();
   }
@@ -16,17 +17,12 @@ struct SegmentTree {
     for(int id = n - 1; id; id--) pull(id);
   }
 
-  void pull(int id) {
+  void pull(int id) { 
     d[id] = merge(d[id << 1], d[id << 1 | 1]);
   }
 
   void update(int id, info t) { // [id]
     d[id += n] = t;
-    for(id >>= 1; id; id >>= 1) pull(id);
-  }
-
-  void update(int id, typename info::value_type t) { // [id]
-    d[id += n].apply(t);
     for(id >>= 1; id; id >>= 1) pull(id);
   }
 
@@ -46,14 +42,10 @@ struct SegmentTree {
 };
 
 struct info {
-  using value_type = int;
   int val;
   info() : val(0) {}
-  info(value_type v) : val(v) {}
-
-  void apply(value_type v) {
-    val += v;
-  }
+  info(int v) : val(v) {}
+  operator int() const { return val; }
 
   friend info merge(info left, info right) {
     info res;
